@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Finance Balance API
+  version: 0.0.1
+
+servers:
+  - url: https://localhost:8080/api
+    description: Development server
+
+tags:
+  - name: User
+    description: Работа с пользователями
+
+
+
+paths:
+
+  ### USER ###
+
+  /user/login:
+    post:
+      summary: Авторизация
+      tags:
+        - User
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserAuthDto"
+      responses:
+        '200':
+          description: Успешный ответ с токеном
+          content:
+            application/json:
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValidationErrorDto"
+        '500':
+          description: Ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorDto"
+
+  /user/registration/meta:
+    get:
+      summary: Получение списка секретных вопросов
+      tags:
+        - User
+      operationId: getSecretQuestions
+      responses:
+        '200':
+          description: Список секретных вопросов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdNameDto'
+        '500':
+          description: Ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorDto"
+
+  /user/register:
+    post:
+      summary: Регистрация пользователя
+      tags:
+        - User
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistrationDto"
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValidationErrorDto"
+        '500':
+          description: Ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerErrorDto"
+
+
+
+components:
+  schemas:
+
+    ### USER ###
+
+    UserAuthDto:
+      type: object
+      description: Дто для авторизации
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: user1
+        password:
+          type: string
+          example: pwd1
+
+    UserRegistrationDto:
+      type: object
+      description: Дто для регистрации
+      required:
+        - login
+        - password
+        - questionId
+        - answer
+      properties:
+        login:
+          type: string
+          example: user1
+        password:
+          type: string
+          example: pwd1
+        questionId:
+          type: string
+          example: d70d5daf-81d5-49d3-91f0-7c54bb00574b
+        answer:
+          type: string
+          example: Ответ
+
+    ### COMMON ###
+
+    IdNameDto:
+      type: object
+      description: Дто с id и названием
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          example: d70d5daf-81d5-49d3-91f0-7c54bb00574b
+        name:
+          type: string
+          example: Название
+
+    ValidationErrorDto:
+      type: object
+      description: Дто ошибки валидации
+      required:
+        - field
+        - error
+      properties:
+        field:
+          type: string
+          example: general.name
+        error:
+          type: string
+          example: Имя не уникально
+
+    ServerErrorDto:
+      type: object
+      description: Дто ошибки на сервере
+      required:
+        - message
+        - stacktrace
+      properties:
+        message:
+          type: string
+          example: Ошибка на сервере
+        stacktrace:
+          type: string
+          example: Стектрейс ошибки

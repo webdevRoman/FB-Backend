@@ -1,0 +1,23 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/fb-db
+    username: fb-user
+    password: fb-pwd
+  flyway:
+    url: jdbc:postgresql://localhost:5432/fb-db
+    user: fb-user
+    password: fb-pwd
+
+logging:
+  level:
+    root: info
+    org.springframework.data.r2dbc: DEBUG
+  log4j2:
+    config:
+      override: "classpath:log4j2-dev.xml"
+
+fb:
+  jwt:
+    secret: 456SomeVeryLong123Stringu6FWEJ8T1Ein65XffiaxyAc1dikva3HJSdVIDXvUCxaubnionZVHwal2SmozDCL5HJvep9Ypjik619zwS9GkJKGJwKWOT2QuEUVB
+    # поддерживаемые единицы: https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.conversion.durations
+    expiration: 6h

@@ -1,0 +1,9 @@
+{
+  "apiPackage": "ru.rgrabelnikov.fbbackend.api",
+  "modelPackage": "ru.rgrabelnikov.fbbackend.model",
+  "serializableModel": true,
+  "hideGenerationTimestamp": true,
+  "interfaceOnly": true,
+  "defaultInterfaces": false,
+  "useBeanValidation": true
+}

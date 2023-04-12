@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: fb-postgres
+    environment:
+      POSTGRES_DB: 'fb-db'
+      POSTGRES_USER: 'fb-user'
+      POSTGRES_PASSWORD: 'fb-pwd'
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'

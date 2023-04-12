@@ -1,0 +1,9 @@
+spring:
+  r2dbc:
+    url: ${CONTAINER.R2BC_URL}
+    username: ${CONTAINER.USERNAME}
+    password: ${CONTAINER.PASSWORD}
+  flyway:
+    url: ${CONTAINER.JDBC_URL}
+    user: ${CONTAINER.USERNAME}
+    password: ${CONTAINER.PASSWORD}
