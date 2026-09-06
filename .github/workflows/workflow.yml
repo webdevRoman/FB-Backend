@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -51,3 +52,13 @@ jobs:
         with:
           name: jacoco-report
           path: build/reports/jacoco/test/
+
+      - name: Add JaCoCo Report to PR
+        if: always()
+        uses: Madrapps/jacoco-report@v1.8.0
+        with:
+          paths: |
+            ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 50
+          update-comment: true
