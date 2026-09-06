@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-09-06T10:37:34.387Z",
+  "path": "/users/login",
+  "status": 404,
+  "error": "Not Found",
+  "requestId": "703aa803",
+  "message": "Entity UserEntity login = test-user not found",
+  "exception": "ru.rgrabelnikov.fbbackend.exception.NotFoundException"
+}

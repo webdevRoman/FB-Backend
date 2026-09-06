@@ -1,52 +1,67 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.2'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '4.0.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'ru.rgrabelnikov'
-version = '0.0.1'
-sourceCompatibility = '19'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
+    mockitoAgent
 }
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    set('testcontainersVersion', "1.17.6")
-}
+def jjwtVersion = '0.13.0'
+def mapstructVersion = '1.6.3'
+def uuidCreatorVersion = '6.1.1'
+def opencsvVersion = '5.12.0'
+def springdocOpenapiStarterWebfluxUiVersion = '3.0.3'
+def mockitoCoreVersion = '5.23.0'
+def checkstyleVersion = '14.1.0'
+def jacocoVersion = '0.8.15'
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation "io.jsonwebtoken:jjwt-api:$jjwtVersion"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$jjwtVersion"
 
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
 
-    implementation 'org.flywaydb:flyway-core'
-
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
 
-    implementation 'com.github.f4b6a3:uuid-creator:5.2.0'
+    implementation "com.github.f4b6a3:uuid-creator:$uuidCreatorVersion"
 
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "com.opencsv:opencsv:$opencsvVersion"
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$springdocOpenapiStarterWebfluxUiVersion"
 
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     modules {
@@ -55,27 +70,82 @@ dependencies {
         }
     }
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-liquibase-test'
+    testImplementation 'org.springframework.boot:spring-boot-data-r2dbc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.projectreactor:reactor-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.testcontainers:r2dbc'
-//    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
+    testImplementation 'org.testcontainers:testcontainers-postgresql'
+    testImplementation 'org.testcontainers:testcontainers-r2dbc'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    mockitoAgent("org.mockito:mockito-core:$mockitoCoreVersion") {
+        transitive = false
+    }
+}
+
+checkstyle {
+    toolVersion = "$checkstyleVersion"
+}
+jacoco {
+    toolVersion = "$jacocoVersion"
 }
 
 compileJava {
     options.compilerArgs += [
-            '-Amapstruct.defaultComponentModel=spring'
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=ERROR'
     ]
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+test {
+    useJUnitPlatform()
+    jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
+    jvmArgs += '-Xshare:off'
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
+}
+jacocoTestCoverageVerification {
+    dependsOn test
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+            // TODO after covering all with tests - remove includes, add excludes if needed
+            includes = [
+                    'ru.rgrabelnikov.fbbackend.controller.UsersController.java',
+                    'ru.rgrabelnikov.fbbackend.service.UserService',
+                    'ru.rgrabelnikov.fbbackend.repo.UserRepo',
+                    'ru.rgrabelnikov.fbbackend.repo.UserQuestionRepo',
+                    'ru.rgrabelnikov.fbbackend.mapper.CommonMapper',
+                    'ru.rgrabelnikov.fbbackend.mapper.CommonMapperImpl'
+
+            ]
+        }
     }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.compilerArgs << "-Xlint:unchecked"
+                options.compilerArgs << "-Xlint:deprecation"
+            }
+        }
+    }
 }

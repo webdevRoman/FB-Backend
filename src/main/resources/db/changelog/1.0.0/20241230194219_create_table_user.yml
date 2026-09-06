@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194219_create_table_user
+      author: Грабельников Роман
+      comment: Создание таблицы "Пользователь"
+      changes:
+        - createTable:
+            tableName: usr
+            ifNotExists: true
+            remarks: Пользователь
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: login
+                  type: text
+                  remarks: Логин
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: text
+                  remarks: Пароль (зашифровано)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: text
+                  remarks: Роль
+                  constraints:
+                    nullable: false
+              - column:
+                  name: question_id
+                  type: uuid
+                  remarks: ID секретного вопроса
+                  constraints:
+                    nullable: false
+              - column:
+                  name: question_answer
+                  type: text
+                  remarks: Ответ на секретный вопрос (зашифровано)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: user_question_id_idx
+            tableName: usr
+            columns:
+              - column:
+                  name: question_id
+        - addUniqueConstraint:
+            constraintName: user_login_unique
+            tableName: usr
+            columnNames: login

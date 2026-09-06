@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194220_create_table_user_question
+      author: Грабельников Роман
+      comment: Создание таблицы "Секретный вопрос"
+      changes:
+        - createTable:
+            tableName: user_question
+            ifNotExists: true
+            remarks: Секретный вопрос
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: question
+                  type: text
+                  remarks: Вопрос
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            constraintName: user_question_question_unique
+            tableName: user_question
+            columnNames: question

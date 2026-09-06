@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194215_create_table_account
+      author: Грабельников Роман
+      comment: Создание таблицы "Счёт"
+      changes:
+        - createTable:
+            tableName: account
+            ifNotExists: true
+            remarks: Счёт
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  remarks: Наименование
+                  constraints:
+                    nullable: false
+              - column:
+                  name: icon_id
+                  type: uuid
+                  remarks: ID иконки
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  remarks: ID пользователя
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: account_icon_id_idx
+            tableName: account
+            columns:
+              - column:
+                  name: icon_id
+        - createIndex:
+            indexName: account_user_id_idx
+            tableName: account
+            columns:
+              - column:
+                  name: user_id
+        - addUniqueConstraint:
+            constraintName: account_name_user_id_unique
+            tableName: account
+            columnNames: name, user_id

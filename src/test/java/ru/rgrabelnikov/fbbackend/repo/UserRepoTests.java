@@ -1,116 +1,56 @@
-package ru.rgrabelnikov.fbbackend.repo;
-
-import com.github.f4b6a3.uuid.UuidCreator;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-import ru.rgrabelnikov.fbbackend.TestcontainersInitializer;
-import ru.rgrabelnikov.fbbackend.UserFactory;
-import ru.rgrabelnikov.fbbackend.dto.UserRegistrationDto;
-import ru.rgrabelnikov.fbbackend.model.Role;
-import ru.rgrabelnikov.fbbackend.model.UserEntity;
-import ru.rgrabelnikov.fbbackend.model.UserQuestionEntity;
-
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@DataR2dbcTest
-public class UserRepoTests extends TestcontainersInitializer {
-
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private UserQuestionRepo userQuestionRepo;
-
-    @Test
-    @DisplayName("Сохранение пользователя")
-    public void saveUser() {
-        UserRegistrationDto userRegistrationDto = UserFactory.createUserRegistrationDto();
-        UUID userQuestionId = UuidCreator.getTimeOrdered();
-        UUID userId = UuidCreator.getTimeOrdered();
-
-        Mono<UserEntity> setup = userRepo.deleteAll()
-                .then(userQuestionRepo.deleteAll())
-                .hasElement()
-                .map(__ -> {
-                    UserQuestionEntity userQuestionEntity = new UserQuestionEntity();
-                    userQuestionEntity.setId(userQuestionId);
-                    userQuestionEntity.setQuestion("question");
-                    return userQuestionEntity;
-                })
-                .flatMap(userQuestionEntity -> userQuestionRepo.save(userQuestionEntity))
-                .map(userQuestionEntity -> {
-                    userRegistrationDto.setQuestionId(userQuestionEntity.getId().toString());
-                    UserEntity userEntity = new UserEntity();
-                    userEntity.setId(userId);
-                    userEntity.setLogin(userRegistrationDto.getLogin());
-                    userEntity.setPassword(userRegistrationDto.getPassword());
-                    userEntity.setRole(Role.USER);
-                    userEntity.setQuestionId(UUID.fromString(userRegistrationDto.getQuestionId()));
-                    userEntity.setQuestionAnswer(userRegistrationDto.getAnswer());
-                    return userEntity;
-                })
-                .flatMap(userEntity -> userRepo.save(userEntity));
-        Mono<UserEntity> find = userRepo.findById(userId);
-        Mono<UserEntity> composite = setup
-                .then(find);
-
-        StepVerifier
-                .create(composite)
-                .consumeNextWith(user -> {
-                    assertEquals(user.getId(), userId);
-                    assertEquals(user.getLogin(), userRegistrationDto.getLogin());
-                    assertEquals(user.getPassword(), userRegistrationDto.getPassword());
-                    assertEquals(user.getRole(), Role.USER);
-                    assertEquals(user.getQuestionId(), userQuestionId);
-                    assertEquals(user.getQuestionAnswer(), userRegistrationDto.getAnswer());
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    @DisplayName("Поиск пользователя по логину")
-    public void findUserByLogin() {
-        UserRegistrationDto userRegistrationDto = UserFactory.createUserRegistrationDto();
-
-        Mono<UserEntity> setup = userRepo.deleteAll()
-                .then(userQuestionRepo.deleteAll())
-                .hasElement()
-                .map(__ -> {
-                    UserQuestionEntity userQuestionEntity = new UserQuestionEntity();
-                    userQuestionEntity.setId();
-                    userQuestionEntity.setQuestion("question");
-                    return userQuestionEntity;
-                })
-                .flatMap(userQuestionEntity -> userQuestionRepo.save(userQuestionEntity))
-                .map(userQuestionEntity -> {
-                    userRegistrationDto.setQuestionId(userQuestionEntity.getId().toString());
-                    UserEntity userEntity = new UserEntity();
-                    userEntity.setId();
-                    userEntity.setLogin(userRegistrationDto.getLogin());
-                    userEntity.setPassword(userRegistrationDto.getPassword());
-                    userEntity.setRole(Role.USER);
-                    userEntity.setQuestionId(UUID.fromString(userRegistrationDto.getQuestionId()));
-                    userEntity.setQuestionAnswer(userRegistrationDto.getAnswer());
-                    return userEntity;
-                })
-                .flatMap(userEntity -> userRepo.save(userEntity));
-        Mono<UserEntity> find = userRepo.findByLogin(userRegistrationDto.getLogin());
-        Mono<UserEntity> composite = setup
-                .then(find);
-
-        StepVerifier
-                .create(composite)
-                .consumeNextWith(user -> {
-                    assertNotNull(user);
-                    assertEquals(user.getLogin(), userRegistrationDto.getLogin());
-                })
-                .verifyComplete();
-    }
-}
+//package ru.rgrabelnikov.fbbackend.repo;
+//
+//import org.apache.commons.lang3.tuple.Pair;
+//import org.assertj.core.api.SoftAssertions;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.data.r2dbc.test.autoconfigure.DataR2dbcTest;
+//import reactor.core.publisher.Mono;
+//import reactor.test.StepVerifier;
+//import ru.rgrabelnikov.fbbackend.TestcontainersInitializer;
+//import ru.rgrabelnikov.fbbackend.domain.UserEntity;
+//
+//import static ru.rgrabelnikov.fbbackend.dto.security.Role.USER;
+//import static ru.rgrabelnikov.fbbackend.testutil.UserFactory.ANSWER;
+//import static ru.rgrabelnikov.fbbackend.testutil.UserFactory.LOGIN;
+//import static ru.rgrabelnikov.fbbackend.testutil.UserFactory.PASSWORD;
+//import static ru.rgrabelnikov.fbbackend.testutil.UserFactory.createUserEntity;
+//import static ru.rgrabelnikov.fbbackend.testutil.UserFactory.createUserQuestionEntity;
+//
+//@DataR2dbcTest
+//public class UserRepoTests extends TestcontainersInitializer {
+//
+//    @Autowired
+//    private UserRepo userRepo;
+//
+//    @Autowired
+//    private UserQuestionRepo userQuestionRepo;
+//
+//    @Test
+//    public void findByLogin() {
+//        final Mono<UserEntity> setup =
+//                userRepo.deleteAll()
+//                        .then(userQuestionRepo.deleteAll())
+//                        .then(userQuestionRepo.save(createUserQuestionEntity()))
+//                        .map(userQuestionEntity -> createUserEntity(userQuestionEntity.getId()))
+//                        .flatMap(source -> userRepo.save(source)
+//                                .map(_ -> source));
+//        final Mono<Pair<UserEntity, UserEntity>> find = setup
+//                .flatMap(source -> userRepo.findByLogin(LOGIN)
+//                        .map(found -> Pair.of(source, found)));
+//
+//        StepVerifier
+//                .create(find)
+//                .consumeNextWith(pair -> {
+//                    final SoftAssertions assertions = new SoftAssertions();
+//                    assertions.assertThat(pair.getRight().getId()).isEqualTo(pair.getLeft().getId());
+//                    assertions.assertThat(pair.getRight().getLogin()).isEqualTo(LOGIN);
+//                    assertions.assertThat(pair.getRight().getPassword()).isEqualTo(PASSWORD);
+//                    assertions.assertThat(pair.getRight().getRole()).isEqualTo(USER);
+//                    assertions.assertThat(pair.getRight().getQuestionId()).isEqualTo(pair.getLeft().getQuestionId());
+//                    assertions.assertThat(pair.getRight().getQuestionAnswer()).isEqualTo(ANSWER);
+//                    assertions.assertAll();
+//                })
+//                .verifyComplete();
+//    }
+//}

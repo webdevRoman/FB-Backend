@@ -1,20 +1,12 @@
 package ru.rgrabelnikov.fbbackend.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
-import java.io.Serializable;
+import java.util.UUID;
 
-/**
- * Дто с id и названием
- */
-@Data
-@Schema(description = "Дто с id и названием")
-@Validated
-public class IdNameDto implements Serializable {
-
-    private String id = null;
-
-    private String name = null;
+@Schema(description = "DTO с id и названием")
+public record IdNameDto(
+        @Schema(description = "ID") UUID id,
+        @Schema(description = "Название") String name
+) {
 }

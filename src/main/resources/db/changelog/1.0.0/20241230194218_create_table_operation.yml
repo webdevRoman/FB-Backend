@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194218_create_table_operation
+      author: Грабельников Роман
+      comment: Создание таблицы "Операция"
+      changes:
+        - createTable:
+            tableName: operation
+            ifNotExists: true
+            remarks: Операция
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: uuid
+                  remarks: ID счёта
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: uuid
+                  remarks: ID категории
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: numeric(10, 2)
+                  remarks: Сумма
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  remarks: Дата
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  remarks: Описание
+        - createIndex:
+            indexName: operation_account_id_idx
+            tableName: operation
+            columns:
+              - column:
+                  name: account_id
+        - createIndex:
+            indexName: operation_category_id_idx
+            tableName: operation
+            columns:
+              - column:
+                  name: category_id

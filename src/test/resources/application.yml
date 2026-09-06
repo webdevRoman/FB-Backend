@@ -1,9 +1,76 @@
+server:
+  port: 8080
+
 spring:
+  profiles:
+    active: TEST
+  application:
+    name: finance-balance
+  webflux:
+    base-path: /api/v1/${spring.application.name}
+  web:
+    error:
+      include-message: always
+      include-exception: true
+      include-binding-errors: always
   r2dbc:
-    url: ${CONTAINER.R2BC_URL}
-    username: ${CONTAINER.USERNAME}
-    password: ${CONTAINER.PASSWORD}
-  flyway:
-    url: ${CONTAINER.JDBC_URL}
-    user: ${CONTAINER.USERNAME}
-    password: ${CONTAINER.PASSWORD}
+    url: r2dbc:postgresql://localhost:5432/fb-db
+    username: fb
+    password: fb-pwd
+    pool:
+      enabled: true
+      max-size: 20
+      initial-size: 1
+      max-idle-time: 5s
+      max-life-time: 10s
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/fb-db
+    user: fb
+    password: fb-pwd
+    change-log: classpath:/db/changelog/index.yml
+  http:
+    codecs:
+      max-in-memory-size: 8MB
+
+swagger:
+  info:
+    version: 1.0.0
+    title: Finance Balance
+    description: Бэкенд приложения для учёта финансов
+    contact:
+      name: Грабельников Роман
+      email: rgrabelnikov99@yandex.ru
+  servers:
+    - description: LOCAL
+      url: http://localhost:${server.port}${spring.webflux.base-path}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: method
+
+fb:
+  jwt:
+    secret: 456SomeVeryLong123Stringu6FWEJ8T1Ein65XffiaxyAc1dikva3HJSdVIDXvUCxaubnionZVHwal2SmozDCL5HJvep9Ypjik619zwS9GkJKGJwKWOT2QuEUVB
+    expiration: PT2H
+
+logging:
+  level:
+    root: INFO
+    ru.rgrabelnikov.fbbackend: DEBUG
+    org.springframework.data.r2dbc: DEBUG
+  #    io.r2dbc.postgresql.QUERY: DEBUG
+  #    io.r2dbc.postgresql.PARAM: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, loggers
+  info:
+    git:
+      mode: full

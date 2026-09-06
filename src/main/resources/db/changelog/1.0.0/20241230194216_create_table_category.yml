@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194216_create_table_category
+      author: Грабельников Роман
+      comment: Создание таблицы "Категория"
+      changes:
+        - createTable:
+            tableName: category
+            ifNotExists: true
+            remarks: Категория
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: income
+                  type: bool
+                  remarks: Доход
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  remarks: Наименование
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  remarks: ID пользователя
+                  constraints:
+                    nullable: false
+              - column:
+                  name: icon_id
+                  type: uuid
+                  remarks: ID иконки
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: uuid
+                  remarks: ID родителя
+        - createIndex:
+            indexName: category_user_id_idx
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: category_icon_id_idx
+            tableName: category
+            columns:
+              - column:
+                  name: icon_id
+        - createIndex:
+            indexName: category_parent_id_idx
+            tableName: category
+            columns:
+              - column:
+                  name: parent_id
+        - addUniqueConstraint:
+            constraintName: category_income_name_user_id_unique
+            tableName: category
+            columnNames: income, name, user_id

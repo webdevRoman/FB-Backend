@@ -1,0 +1,14 @@
+name: finance-balance-backend
+
+services:
+  postgres:
+    image: postgres:18.3-alpine
+    container_name: fb-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: 'fb-db'
+      POSTGRES_PASSWORD: 'fb-pwd'
+    volumes:
+      - ./volumes/db:/var/lib/postgresql
+      - ../db-setup:/docker-entrypoint-initdb.d

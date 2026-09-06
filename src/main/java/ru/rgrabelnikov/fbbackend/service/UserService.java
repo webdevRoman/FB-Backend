@@ -1,18 +1,21 @@
 package ru.rgrabelnikov.fbbackend.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.rgrabelnikov.fbbackend.dto.IdNameDto;
-import ru.rgrabelnikov.fbbackend.dto.UserRegistrationDto;
-import ru.rgrabelnikov.fbbackend.model.UserEntity;
+import ru.rgrabelnikov.fbbackend.dto.ListWrapperDto;
+import ru.rgrabelnikov.fbbackend.dto.user.JwtDto;
+import ru.rgrabelnikov.fbbackend.dto.user.UserAuthDto;
+import ru.rgrabelnikov.fbbackend.dto.user.UserPasswordRecoveryDto;
+import ru.rgrabelnikov.fbbackend.dto.user.UserRegistrationDto;
 
 public interface UserService extends ReactiveUserDetailsService {
 
-    Mono<UserEntity> findByLogin(String login);
+    Mono<ListWrapperDto<IdNameDto>> getUserQuestions();
 
-    Flux<IdNameDto> findAllQuestions();
+    Mono<JwtDto> register(UserRegistrationDto body);
 
-    Mono<ResponseEntity<?>> create(UserRegistrationDto userRegistrationDto);
+    Mono<JwtDto> login(UserAuthDto body);
+
+    Mono<JwtDto> recoverPassword(UserPasswordRecoveryDto body);
 }

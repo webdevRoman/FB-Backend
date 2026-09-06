@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194217_create_table_icon
+      author: Грабельников Роман
+      comment: Создание таблицы "Иконка"
+      changes:
+        - createTable:
+            tableName: icon
+            ifNotExists: true
+            remarks: Иконка
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  remarks: ID пользователя
+                  constraints:
+                    nullable: false
+              - column:
+                  name: icon
+                  type: bytea
+                  remarks: Иконка
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tooltip
+                  type: text
+                  remarks: Тултип
+        - createIndex:
+            indexName: icon_user_id_idx
+            tableName: icon
+            columns:
+              - column:
+                  name: user_id

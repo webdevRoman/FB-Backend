@@ -1,0 +1,141 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241230194222_fill_table_user_question
+      author: Грабельников Роман
+      comment: Заполнение таблицы "Секретный вопрос"
+      changes:
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Девичья фамилия матери'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Девичья фамилия бабушки'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Имя и отчество бабушки'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Имя и отчество дедушки'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Имя лучшего друга детства'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'В каком городе познакомились родители'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Номер начальной школы'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Фамилия классного руководителя в начальной школе'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Имя первого домашнего питомца'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Модель первой машины'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Название любимой спортивной команды'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Название любимой книги'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Название любимого фильма'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Имя и фамилия любимого актёра'
+        - insert:
+            tableName: user_question
+            columns:
+              - column:
+                  name: id
+                  valueComputed: 'gen_random_uuid()'
+              - column:
+                  name: question
+                  value: 'Любимое блюдо'

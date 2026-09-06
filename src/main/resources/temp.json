@@ -1,0 +1,8 @@
+{
+  "dateColumnIndex": 6,
+  "amountColumnIndex": 2,
+  "descriptionColumnIndex": 3,
+  "categoryColumnIndex": 1,
+  "dateFormat": "dd.MM.yyyy",
+  "accountId": "1f15d68b-68ca-6f6d-9750-4df9920f8df7"
+}
