@@ -29,6 +29,9 @@ jobs:
         with:
           gradle-version: '9.7.1'
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Lint with Checkstyle
         run: ./gradlew checkstyleMain
 
