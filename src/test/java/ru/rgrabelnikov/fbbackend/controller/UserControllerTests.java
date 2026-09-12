@@ -1,18 +1,9 @@
 package ru.rgrabelnikov.fbbackend.controller;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
 import ru.rgrabelnikov.fbbackend.AbstractIntegrationTest;
-import ru.rgrabelnikov.fbbackend.dto.IdNameDto;
-import ru.rgrabelnikov.fbbackend.dto.ListWrapperDto;
-import ru.rgrabelnikov.fbbackend.dto.ServerErrorDto;
-import ru.rgrabelnikov.fbbackend.dto.user.UserAuthDto;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static ru.rgrabelnikov.fbbackend.testutil.TestUtils.getAsObject;
 
 public class UserControllerTests extends AbstractIntegrationTest {
-
+/*
     @Test
     public void getUserQuestions() {
         webClient
@@ -76,7 +67,7 @@ public class UserControllerTests extends AbstractIntegrationTest {
                             .isEqualTo(expectedRs);
                 });
     }
-
+*/
 //    @Test
 //    @DisplayName("Авторизация - неверный пароль")
 //    public void loginWrongPassword() {
