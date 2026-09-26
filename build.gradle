@@ -113,6 +113,7 @@ jacocoTestReport {
     dependsOn test
     reports {
         xml.required = true
+        html.required = true
     }
 }
 jacocoTestCoverageVerification {
@@ -133,11 +134,11 @@ jacocoTestCoverageVerification {
                     'ru.rgrabelnikov.fbbackend.repo.UserQuestionRepo',
                     'ru.rgrabelnikov.fbbackend.mapper.CommonMapper',
                     'ru.rgrabelnikov.fbbackend.mapper.CommonMapperImpl'
-
             ]
         }
     }
 }
+check.dependsOn jacocoTestCoverageVerification
 
 allprojects {
     gradle.projectsEvaluated {
