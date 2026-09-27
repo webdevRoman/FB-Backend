@@ -1,0 +1,29 @@
+# Keep the Docker build context small and reproducible.
+# Everything that is not needed by docker/Dockerfile is excluded here.
+.git
+.github
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Local build output (the image is built inside the dev stage)
+build/
+**/build/
+out/
+.gradle
+**/.gradle
+target/
+
+# Local runtime data
+docker/volumes/
+db-setup/
+
+# Not needed inside the image
+src/test/
+README.md
+AGENTS.md
+Dockerfile
+.dockerignore
+.gitignore
+gradlew.bat

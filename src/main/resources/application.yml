@@ -14,7 +14,7 @@ spring:
       include-exception: true
       include-binding-errors: always
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/fb-db
+    url: r2dbc:postgresql://${DB_HOST}:5432/fb-db
     username: fb
     password: fb-pwd
     pool:
@@ -25,7 +25,7 @@ spring:
       max-life-time: 10s
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5432/fb-db
+    url: jdbc:postgresql://${DB_HOST}:5432/fb-db
     user: fb
     password: fb-pwd
     change-log: classpath:/db/changelog/index.yml

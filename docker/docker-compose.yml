@@ -1,9 +1,10 @@
-name: finance-balance-backend
+name: finance-balance-lb
 
 services:
+
   postgres:
     image: postgres:18.3-alpine
-    container_name: fb-postgres
+    container_name: fb-lb-postgres
     ports:
       - '5432:5432'
     environment:
@@ -12,3 +13,19 @@ services:
     volumes:
       - ./volumes/db:/var/lib/postgresql
       - ../db-setup:/docker-entrypoint-initdb.d
+    networks:
+      - fb_lb_network
+
+  fb-lb:
+    image: fb-lb:multistage
+    container_name: fb-lb-app
+    ports:
+      - '8080:8080'
+    environment:
+      DB_HOST: 'fb-lb-postgres'
+    networks:
+      - fb_lb_network
+
+networks:
+  fb_lb_network:
+    driver: bridge
