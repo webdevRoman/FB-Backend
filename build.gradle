@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.6'
+    id 'org.springframework.boot' version '4.1.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'checkstyle'
     id 'jacoco'
@@ -31,8 +31,8 @@ def jjwtVersion = '0.13.0'
 def mapstructVersion = '1.6.3'
 def uuidCreatorVersion = '6.1.1'
 def opencsvVersion = '5.12.0'
-def springdocOpenapiStarterWebfluxUiVersion = '3.0.3'
-def mockitoCoreVersion = '5.23.0'
+def springdocOpenapiStarterWebfluxUiVersion = '3.1.1'
+def mockitoCoreVersion = '5.24.0'
 def checkstyleVersion = '14.1.0'
 def jacocoVersion = '0.8.15'
 
