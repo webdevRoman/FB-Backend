@@ -122,7 +122,9 @@ jobs:
 
       - name: Push image to Docker Registry
         if: github.ref == 'refs/heads/develop'
-        run: docker push ghcr.io/webdevroman/${{ env.IMAGE }}
+        run: |
+          docker tag ${{ env.IMAGE }} ghcr.io/webdevroman/${{ env.IMAGE }}
+          docker push ghcr.io/webdevroman/${{ env.IMAGE }}
 
 #      - name: Push image to Docker Registry
 #        if: github.ref == 'refs/heads/develop'
