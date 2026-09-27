@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1
+
+FROM eclipse-temurin:25-jdk
+
+WORKDIR /app
+
+COPY gradlew settings.gradle build.gradle ./
+COPY gradle/wrapper/ gradle/wrapper/
+
+RUN chmod +x gradlew \
+    && ./gradlew --no-daemon --console=plain dependencies
+
+COPY config/ config/
+COPY src/ src/
+
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV TZ=Europe/Moscow
+
+RUN mkdir -p /app/logs
+
+RUN ./gradlew --no-daemon --console=plain clean build \
+    && jar="$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -n 1)" \
+    && cp -v "$jar" /app/app.jar
+
+EXPOSE 8080
+
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0"
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]
