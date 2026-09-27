@@ -37,6 +37,7 @@ public class WebSecurityConfig {
                         "/users/registration/meta",
                         "/users/registration",
                         "/users/recovery",
+                        "/actuator",
                         "/actuator/health",
                         activeProfileLocal ? "/swagger-ui/**" : null,
                         activeProfileLocal ? "/v3/api-docs/**" : null
