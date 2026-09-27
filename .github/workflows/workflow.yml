@@ -49,7 +49,7 @@ jobs:
 
       - name: Calculate image name and tag based on run number and short git commit SHA
         run: |
-          runNumber=$(${{ github.run_number }})
+          runNumber=${{ github.run_number }}
           shortSha=$(git rev-parse --short ${{ github.sha }})
           image="fb-lb:${runNumber}-${shortSha}"
           echo "IMAGE=$image" >> $GITHUB_ENV
