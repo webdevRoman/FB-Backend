@@ -16,13 +16,24 @@ services:
     networks:
       - fb_lb_network
 
+  redis:
+    image: redis:8.10.2-alpine
+    container_name: fb-lb-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./volumes/redis:/data
+    networks:
+      - fb_lb_network
+
   fb-lb:
-    image: fb-lb:multistage
+    image: fb-lb:multistage-01
     container_name: fb-lb-app
     ports:
       - '8080:8080'
     environment:
       DB_HOST: 'fb-lb-postgres'
+      REDIS_HOST: 'fb-lb-redis'
     networks:
       - fb_lb_network
 

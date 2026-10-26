@@ -23,6 +23,12 @@ spring:
       initial-size: 1
       max-idle-time: 5s
       max-life-time: 10s
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+      connect-timeout: 2s
   liquibase:
     enabled: true
     url: jdbc:postgresql://localhost:5432/fb-db
