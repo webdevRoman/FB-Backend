@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20261026120000_create_table_visit
+      author: Грабельников Роман
+      comment: Создание таблицы "Посещение"
+      changes:
+        - createTable:
+            tableName: visit
+            ifNotExists: true
+            remarks: Посещение
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  remarks: ID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: integer
+                  remarks: Версия
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: timestamp with time zone
+                  remarks: Дата создания
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_on
+                  type: timestamp with time zone
+                  remarks: Дата изменения
+                  constraints:
+                    nullable: false
