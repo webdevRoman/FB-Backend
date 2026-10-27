@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-lb
+  namespace: staging
+  labels:
+    app: fb-lb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fb-lb
+  template:
+    metadata:
+      labels:
+        app: fb-lb
+    spec:
+      containers:
+        - name: fb-lb
+          image: ghcr.io/webdevroman/fb-lb:OLD_TAG-staging
+          ports:
+            - name: http
+              containerPort: 8080
