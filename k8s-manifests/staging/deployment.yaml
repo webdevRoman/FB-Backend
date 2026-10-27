@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: fb-lb
-          image: ghcr.io/webdevroman/fb-lb:OLD_TAG-staging
+          image: ghcr.io/webdevroman/fb-lb:23-4900488-staging
           ports:
             - name: http
               containerPort: 8080
