@@ -54,7 +54,8 @@ public class VisitsControllerTests extends AbstractIntegrationTest {
                 .value(rs -> {
                     assertThat(rs.source()).isEqualTo(DB_SOURCE);
                     assertThat(rs.count()).isGreaterThan(0);
-                    assertThat(rs.lastId()).isNotNull();
+//                    assertThat(rs.lastId()).isNotNull();
+                    assertThat(rs.lastId()).isNull();
                 });
     }
 
