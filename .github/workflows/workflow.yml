@@ -184,6 +184,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      staging_image: ${{ steps.copy.outputs.staging_image }}
     env:
       REGISTRY: ghcr.io
       SOURCE_IMAGE: ${{ needs.publication.outputs.published_image }}
@@ -202,4 +204,61 @@ jobs:
         run: echo "$REGISTRY_TOKEN" | skopeo login "$REGISTRY" --username "$REGISTRY_USER" --password-stdin
 
       - name: Copy image to staging tag with skopeo
-        run: skopeo copy "docker://$SOURCE_IMAGE" "docker://$STAGING_IMAGE"
+        id: copy
+        run: |
+          skopeo copy "docker://$SOURCE_IMAGE" "docker://$STAGING_IMAGE"
+          echo "staging_image=$STAGING_IMAGE" >> "$GITHUB_OUTPUT"
+
+  update-manifest:
+    name: Update image tag in staging manifest
+    runs-on: ubuntu-24.04
+    needs: [ staging ]
+    if: >-
+      github.ref == 'refs/heads/develop'
+      && needs.staging.result == 'success'
+      && needs.staging.outputs.staging_image != ''
+    permissions:
+      contents: write
+    env:
+      MANIFEST: k8s-manifests/staging/deployment.yaml
+      STAGING_IMAGE: ${{ needs.staging.outputs.staging_image }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install yq
+        run: |
+          if ! command -v yq > /dev/null 2>&1; then
+            sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+            sudo chmod +x /usr/local/bin/yq
+          fi
+          yq --version
+
+      - name: Show the image reference before the update
+        run: |
+          echo "Manifest:  $MANIFEST"
+          echo "Old image: $(yq '.spec.template.spec.containers[0].image' "$MANIFEST")"
+          echo "New image: $STAGING_IMAGE"
+
+      - name: Update the image in the manifest
+        run: |
+          yq -i '.spec.template.spec.containers[0].image = strenv(STAGING_IMAGE)' "$MANIFEST"
+          updated=$(yq '.spec.template.spec.containers[0].image' "$MANIFEST")
+          if [ "$updated" != "$STAGING_IMAGE" ]; then
+            echo "::error::Manifest still points to '$updated' instead of '$STAGING_IMAGE'"
+            exit 1
+          fi
+
+      - name: Commit and push the manifest
+        run: |
+          git config user.name "CI Bot"
+          git config user.email "ci-bot@example.com"
+          git add "$MANIFEST"
+          if git diff --cached --quiet; then
+            echo "::error::$MANIFEST was not changed, nothing to commit"
+            exit 1
+          fi
+          git diff --cached
+          git commit -m "Deploy $STAGING_IMAGE to staging"
+          git push
