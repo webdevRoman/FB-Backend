@@ -81,6 +81,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      published_image: ${{ steps.push.outputs.published_image }}
 
     steps:
       - name: Checkout
@@ -162,7 +164,42 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push image to Docker Registry
+        id: push
         if: github.ref == 'refs/heads/develop'
         run: |
           docker tag ${{ env.IMAGE }} ghcr.io/webdevroman/${{ env.IMAGE }}
           docker push ghcr.io/webdevroman/${{ env.IMAGE }}
+          echo "published_image=ghcr.io/webdevroman/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
+
+  staging:
+    name: Copy image to staging
+    runs-on: ubuntu-24.04
+    needs: [ build, tests, publication ]
+    if: >-
+      github.ref == 'refs/heads/develop'
+      && needs.build.result == 'success'
+      && needs.tests.result == 'success'
+      && needs.publication.result == 'success'
+      && needs.publication.outputs.published_image != ''
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ghcr.io
+      SOURCE_IMAGE: ${{ needs.publication.outputs.published_image }}
+      STAGING_IMAGE: ${{ needs.publication.outputs.published_image }}-staging
+
+    steps:
+      - name: Show source and staging image references
+        run: |
+          echo "Source : $SOURCE_IMAGE"
+          echo "Staging: $STAGING_IMAGE"
+
+      - name: Log in to Docker Registry with skopeo
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$REGISTRY_TOKEN" | skopeo login "$REGISTRY" --username "$REGISTRY_USER" --password-stdin
+
+      - name: Copy image to staging tag with skopeo
+        run: skopeo copy "docker://$SOURCE_IMAGE" "docker://$STAGING_IMAGE"
