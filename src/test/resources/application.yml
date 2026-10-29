@@ -63,6 +63,8 @@ fb:
   jwt:
     secret: 456SomeVeryLong123Stringu6FWEJ8T1Ein65XffiaxyAc1dikva3HJSdVIDXvUCxaubnionZVHwal2SmozDCL5HJvep9Ypjik619zwS9GkJKGJwKWOT2QuEUVB
     expiration: PT2H
+  chaos:
+    enabled: false
 
 logging:
   level:

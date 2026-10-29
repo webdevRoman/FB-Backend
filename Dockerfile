@@ -38,6 +38,9 @@ WORKDIR /app
 RUN mkdir -p /app/logs && chown -R app:app /app
 COPY --from=dev --chown=app:app /workspace/app.jar /app/app.jar
 
+ARG CHAOS_MODE=false
+ENV CHAOS_MODE=$CHAOS_MODE
+
 EXPOSE 8080
 
 USER app

@@ -40,6 +40,7 @@ public class WebSecurityConfig {
                         "/visit",
                         "/actuator",
                         "/actuator/health",
+                        "/actuator/prometheus",
                         activeProfileLocal ? "/swagger-ui/**" : null,
                         activeProfileLocal ? "/v3/api-docs/**" : null
                 )
